@@ -1,3 +1,4 @@
 secrets.json
 *.vscode
 Leave and Absence Dashboard.session.sql
+node_modules
