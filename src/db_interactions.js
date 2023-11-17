@@ -24,23 +24,23 @@ class DB_Interface {
     }
 
     /**
-     * Create a database entry for an employee. A unique employee id is automatically generated upon insertion
+     * Create a database entry for an employee, using their email as an identifier
      * 
-     * @param {String} name The employee's full name
      * @param {String} email The employee's email address
+     * @param {String} name The employee's full name
      * @param {String} password The employee's password - will be encrypted using MD5 hash
      * @param {Integer} company_id The employee's company id
-     * @param {Integer} manager_id The employee's manager id
+     * @param {String} manager_email The employee's manager's email
      */
-    add_employee(name, email, password, company_id, manager_id = null) {
+    add_employee(email, name, password, company_id, manager_email = null) {
         var query = "";
 
-        if (manager_id == null) {
-            var query = "INSERT INTO employee (empl_name, empl_email, empl_pwd, company_id) VALUES ('" + name + "', '" + email + "', MD5('" + password + "'), " + company_id + ");";
+        if (manager_email == null) {
+            var query = "INSERT INTO employee (empl_email, empl_name, empl_pwd, company_id) VALUES ('" + email + "', '" + name + "',  MD5('" + password + "'), " + company_id + ");";
         } else {
-            var query = "INSERT INTO employee (empl_name, empl_email, empl_pwd, company_id, manager_id) VALUES ('" + name + "', '" + email + "',  MD5('" + password + "'), " + company_id + ", " + manager_id + ");";
+            var query = "INSERT INTO employee (empl_email, empl_name, empl_pwd, company_id, manager_email) VALUES ('" + email + "', '" + name + "',  MD5('" + password + "'), " + company_id + ", '" + manager_email + "');";
         }
-
+        
         this.con.query(query, function (err) {
             if (err) {
                 console.error('Error inserting employee data: ' + err.message);
@@ -50,14 +50,15 @@ class DB_Interface {
         });
     }
 
-    /**
-     * Delete a database entry for an employee
-     * 
-     * @param {Integer} empl_id The employee's id
-     */
-    del_employee(empl_id) {
-        var query = "DELETE FROM employee WHERE empl_id = " + empl_id + ";";
 
+    /**
+     * Delete a database entry for an employee, using either their employee id or employee email address
+     * 
+     * @param {String} empl_email The email of the employee to be deleted
+     */
+    del_employee(empl_email) {
+        var query = "DELETE FROM employee WHERE empl_email = '" + empl_email + "';";
+        
         this.con.query(query, function (err) {
             if (err) {
                 console.error('Error deleting employee data: ' + err.message);
@@ -67,22 +68,24 @@ class DB_Interface {
         });
     }
 
-    /**
-     * Retrieves a database entry for an employee
-     * 
-     * @param {Integer} empl_id The employee's id
-     */
-    ret_employee(empl_id) {
-        // var query = "DELETE FROM employee WHERE empl_id = " + empl_id + ";";
 
-        // this.con.query(query, function (err) {
-        //     if (err) {
-        //         console.error('Error deleting employee data: ' + err.message);
-        //         return;
-        //     }
-        //     console.log("Employee deletion successful");
-        // });
+    /**
+     * Retrieves a database entry for an employee, using either their employee id or employee email address
+     * 
+     * @param {String} empl_email The email of the employee  
+     */
+    ret_employee(empl_email) {
+        var query = "SELECT * FROM employee WHERE empl_email = '" + empl_email + "';";
+
+        this.con.query(query, function (err, result) {
+            if (err) {
+                console.error('Error retrieving employee data: ' + err.message);
+                return;
+            }
+            return result;
+        });
     }
+
 }
 
 module.exports = DB_Interface;
