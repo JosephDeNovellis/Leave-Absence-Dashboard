@@ -36,9 +36,9 @@ class DB_Interface {
         var query = "";
 
         if (manager_email == null) {
-            var query = "INSERT INTO employee (empl_email, empl_name, empl_pwd, company_id) VALUES ('" + email + "', '" + name + "',  MD5('" + password + "'), " + company_id + ");";
+            query = "INSERT INTO employee (empl_email, empl_name, empl_pwd, company_id) VALUES ('" + email + "', '" + name + "',  MD5('" + password + "'), " + company_id + ");";
         } else {
-            var query = "INSERT INTO employee (empl_email, empl_name, empl_pwd, company_id, manager_email) VALUES ('" + email + "', '" + name + "',  MD5('" + password + "'), " + company_id + ", '" + manager_email + "');";
+            query = "INSERT INTO employee (empl_email, empl_name, empl_pwd, company_id, manager_email) VALUES ('" + email + "', '" + name + "',  MD5('" + password + "'), " + company_id + ", '" + manager_email + "');";
         }
         
         this.con.query(query, function (err) {
@@ -57,9 +57,7 @@ class DB_Interface {
      * @param {String} empl_email The email of the employee to be deleted
      */
     del_employee(empl_email) {
-        var query = "DELETE FROM employee WHERE empl_email = '" + empl_email + "';";
-        
-        this.con.query(query, function (err) {
+        this.con.query("DELETE FROM employee WHERE empl_email = '" + empl_email + "';", function (err) {
             if (err) {
                 console.error('Error deleting employee data: ' + err.message);
                 return;
@@ -75,13 +73,12 @@ class DB_Interface {
      * @param {String} empl_email The email of the employee  
      */
     ret_employee(empl_email) {
-        var query = "SELECT * FROM employee WHERE empl_email = '" + empl_email + "';";
-
-        this.con.query(query, function (err, result) {
+        this.con.query("SELECT * FROM employee WHERE empl_email = '" + empl_email + "';", function (err, result) {
             if (err) {
                 console.error('Error retrieving employee data: ' + err.message);
                 return;
             }
+            console.log(result);
             return result;
         });
     }
