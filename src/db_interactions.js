@@ -49,18 +49,19 @@ class DB_Interface {
      * @param {String} email The employee's email address
      * @param {String} name The employee's full name
      * @param {String} password The employee's password - will be encrypted using MD5 hash
-     * @param {Integer} company_id The employee's company id
+     * @param {Integer} company_name The employee's company name
      * @param {String} manager_email The employee's manager's email
      */
-    add_employee(email, name, password, company_id, manager_email = null) {
+    add_employee(email, name, password, company_name, manager_email = null) {
         var query = "";
 
         if (manager_email == null) {
-            query = "INSERT INTO employee (empl_email, empl_name, empl_pwd, company_id) VALUES ('" + email + "', '" + name + "',  MD5('" + password + "'), " + company_id + ");";
+            query = "INSERT INTO employee (empl_email, empl_name, empl_pwd, company_name) VALUES ('" + email + "', '" + name + "',  MD5('" + password + "'), '" + company_name + "');";
         } else {
-            query = "INSERT INTO employee (empl_email, empl_name, empl_pwd, company_id, manager_email) VALUES ('" + email + "', '" + name + "',  MD5('" + password + "'), " + company_id + ", '" + manager_email + "');";
+            query = "INSERT INTO employee (empl_email, empl_name, empl_pwd, company_name, manager_email) VALUES ('" + email + "', '" + name + "',  MD5('" + password + "'), '" + company_name + "', '" + manager_email + "');";
         }
         
+        console.log(query);
         this.#con.query(query, function (err) {
             if (err) {
                 console.error('Error inserting employee data: ' + err.message);
