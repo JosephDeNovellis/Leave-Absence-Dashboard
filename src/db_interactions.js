@@ -6,20 +6,40 @@ const credentials = require('./secrets.json');
  */
 class DB_Interface {
 
-    constructor() { 
-        this.con = mysql.createConnection({
-            host : credentials.host,
-            user : credentials.user,
-            password : credentials.password,
-            database : credentials.database
-        });
+    #con = null;
 
-        this.con.connect(function(err) {
+    /**
+     * If a database connection is already established, no new connection will be created
+     */
+    constructor() { 
+        if (this.#con == null) {
+            this.#con = mysql.createConnection({
+                host : credentials.host,
+                user : credentials.user,
+                password : credentials.password,
+                database : credentials.database
+            });
+
+            this.#con.connect(function(err) {
+                if (err) {
+                    console.error('Error connecting to database: ' + err.message);
+                    return;
+                }
+                console.log(`Successfully connected to database: ${credentials.database}`);
+            });
+        } else {
+            return;
+        }
+    }
+
+    // Might not need this?
+    disconnect() {
+        this.#con.end(function(err) {
             if (err) {
-                console.error('Error connecting to database: ' + err.message);
+                console.error('Error closing connection: ' + err.message);
                 return;
             }
-            console.log(`Successfully connected to database: ${credentials.database}`);
+            console.log(`Connection closed.`);
         });
     }
 
@@ -41,7 +61,7 @@ class DB_Interface {
             query = "INSERT INTO employee (empl_email, empl_name, empl_pwd, company_id, manager_email) VALUES ('" + email + "', '" + name + "',  MD5('" + password + "'), " + company_id + ", '" + manager_email + "');";
         }
         
-        this.con.query(query, function (err) {
+        this.#con.query(query, function (err) {
             if (err) {
                 console.error('Error inserting employee data: ' + err.message);
                 return;
@@ -57,7 +77,7 @@ class DB_Interface {
      * @param {String} empl_email The email of the employee to be deleted
      */
     del_employee(empl_email) {
-        this.con.query("DELETE FROM employee WHERE empl_email = '" + empl_email + "';", function (err) {
+        this.#con.query("DELETE FROM employee WHERE empl_email = '" + empl_email + "';", function (err) {
             if (err) {
                 console.error('Error deleting employee data: ' + err.message);
                 return;
@@ -73,14 +93,14 @@ class DB_Interface {
      * @param {String} empl_email The email of the employee  
      */
     ret_employee(empl_email) {
-        this.con.query("SELECT * FROM employee WHERE empl_email = '" + empl_email + "';", function (err, result) {
-            if (err) {
-                console.error('Error retrieving employee data: ' + err.message);
-                return;
-            }
-            console.log(result);
-            return result;
-        });
+        return new Promise((resolve, reject) => {
+            this.#con.query("SELECT * FROM employee WHERE empl_email = '" + empl_email + "';", function (err, result) {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(result);
+            });
+        });   
     }
 
 }
