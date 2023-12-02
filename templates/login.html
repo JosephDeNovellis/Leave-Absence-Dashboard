@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Leave & Absence Dashboard</title>
+</head>
+<body class = body>
+    <div class="container">
+        <form id="loginForm">
+            <label for="username">Employee Email:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="button" onclick="login()">Login</button>
+        </form>
+    </div>
+
+    <script type ="module" src="script.js"></script>
+    <script type ="module" src="./src/db_interactions.js"></script>
+</body>
+</html>
