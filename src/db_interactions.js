@@ -302,3 +302,4 @@ class DB_Interface {
 }
 
 module.exports = DB_Interface;
+export default DB_Interface;
