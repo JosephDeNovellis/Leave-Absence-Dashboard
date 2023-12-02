@@ -1,9 +1,7 @@
 from db_interactions import DB_Interface 
 from flask import Flask, render_template, request, redirect, url_for, session
-import logging
 import json
 import datetime
-import sys
 
 file = open('secrets.json')
 credentials = json.load(file)
