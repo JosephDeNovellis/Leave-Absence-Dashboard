@@ -106,7 +106,7 @@ class DB_Interface {
 
 
     /**
-     * Retrieves a database entry for an employee, using their email address and password
+     * Retrieves a database entry for an employee, using their employee email address and password
      * 
      * @param {String} email The email of the employee  
      * @param {String} password The password of the employee
@@ -287,7 +287,7 @@ class DB_Interface {
      * @param {String} email The email of the request to be deleted
      * @param {Date} date The date to be deleted
      */
-    del_leave_request(email, date) {
+    del_wfh_day(email, date) {
         var date_formnatted = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-');
 
         this.#con.query("DELETE FROM wfh_day WHERE empl_email = '" + email + "' AND wfh_date = '" + date_formnatted + "';", function (err) {
