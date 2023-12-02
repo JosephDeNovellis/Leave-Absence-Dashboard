@@ -1,5 +1,5 @@
 secrets.json
 *.vscode
 Leave and Absence Dashboard.session.sql
-node_modules
-main.js
+.venv
+__pycache__
