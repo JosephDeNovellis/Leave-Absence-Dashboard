@@ -89,7 +89,7 @@ class DB_Interface:
         Retrieves a database entry for an employee, using their employee email address and password
 
         Parameters:
-        email (str): The email of the employee  
+        email (str): The email of the employee
         password (str): The password of the employee
 
         Returns:
