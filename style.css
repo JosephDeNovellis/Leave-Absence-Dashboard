@@ -1,4 +1,4 @@
-body {
+.body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     margin: 0;
@@ -6,6 +6,12 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+}
+
+.dashboard-body {
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    margin: 0;
 }
 
 .container {
@@ -39,8 +45,10 @@ button {
 .week-columns {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
+    gap: 8px;
     margin-top: 20px;
+    margin-bottom: 20px;
+    position: relative; /* Added this line */
 }
 
 .day-column {
@@ -48,4 +56,11 @@ button {
     padding: 10px;
     text-align: center;
     background-color: #f9f9f9;
+    height: 2000%; /* Set the height to 100% */
+    box-sizing: border-box; /* Include padding and border in the height calculation */
+}
+
+#leaveForm {
+    display: none;
+    position: absolute; /* Added this line */
 }

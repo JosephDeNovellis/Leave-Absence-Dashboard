@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/JosephDeNovellis/Leave-Absence-Dashboard/issues"
   },
-  "homepage": "https://github.com/JosephDeNovellis/Leave-Absence-Dashboard#readme"
+  "homepage": "https://github.com/JosephDeNovellis/Leave-Absence-Dashboard#readme",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
 }

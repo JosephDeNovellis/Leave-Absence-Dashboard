@@ -1,31 +1,44 @@
+import DB_Interface from './src/db_interactions.js';
+const DB = new DB_Interface(); 
+
+
 function login() {
     // Fetch values from the form
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
 
-    // Send login request to the backend
-    fetch('backend/login.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username: username, password: password }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Check the response from the backend
-        if (data.success) {
-            // Redirect to the dashboard if login is successful
-            window.location.href = 'dashboard.html';
-        } else {
-            alert('Login failed. Please check your credentials.');
-        }
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
+    console.log("Username:", username);
+    console.log("Password:", password);
+
+    // Use the DB_Interface to authenticate the user
+    DB.ret_employee(username)
+        .then(data => {
+            console.log("Data from ret_employee:", data);
+
+            // Check if the user exists in the database
+            if (data.length > 0) {
+                console.log("User found in the database");
+
+                // Compare the entered password with the stored password
+                
+                if (data[0].empl_pwd === password) {
+                    console.log("Password matched. Redirecting to dashboard...");
+                    // Redirect to the dashboard if login is successful
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert('Login failed. Incorrect password.');
+                }
+            } else {
+                alert('Login failed. User not found.');
+            }
+        })
+        .catch(error => {
+            console.error('Error from ret_employee:', error);
+        });
 }
 
+
+/*
 document.addEventListener('DOMContentLoaded', function() {
     // Fetch and display existing leave requests
     fetchLeaveRequests();
@@ -35,8 +48,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Display current week in columns
     displayCurrentWeekColumns();
-});
 
+    // Add event listener for leave form
+    document.getElementById('leaveDate').addEventListener('change', function() {
+        document.getElementById('leaveForm').style.display = 'block';
+    });
+});
 
 function displayCurrentWeekColumns() {
     var daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -52,7 +69,6 @@ function displayCurrentWeekColumns() {
     endDate.setDate(startDate.getDate() + 6); // End on Saturday
 
     // Display the current week
-    
     document.getElementById('currentWeek').innerText = 'Week of: ' + formatDate(startDate) + ' to ' + formatDate(endDate);
 
     // Display columns for each day of the week
@@ -63,7 +79,20 @@ function displayCurrentWeekColumns() {
 
         weekColumns.appendChild(dayColumn);
     });
+
+    // Add event listener for each day column
+    weekColumns.addEventListener('click', function(event) {
+        const dateBox = event.target;
+        if (dateBox.tagName === 'DIV' && dateBox.classList.contains('day-column')) {
+            // Set the selected date in the leave form
+            document.getElementById('leaveDate').value = formatDate(startDate);
+            // Show the leave form
+            document.getElementById('leaveForm').style.display = 'block';
+        }
+    });
 }
+
+// ... (Rest of the code remains unchanged)
 
 function formatDate(date) {
     var options = { year: 'numeric', month: 'numeric', day: 'numeric' };
@@ -129,5 +158,4 @@ function submitLeaveRequest() {
     .catch((error) => {
         console.error('Error:', error);
     });
-}
-
+}*/
