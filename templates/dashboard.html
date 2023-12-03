@@ -6,49 +6,37 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <title>Leave Dashboard</title>
 </head>
+
 <body class="dashboard-body">
-    <div class="container">
+    <div class="dash-container">
         <h2 id="welcomeMessage"></h2>
 
         <p> Welcome, {{ session['name'] }}!
         
         <hr>
 
-        <div class="row">
-            <div class="column left">Sidebar</div>
-            <div class="column middle">
-                <h1>Leave Requests</h1>
+        <div class = "row">
+            <div class = "column left">
+                {% if manager %}
+                    <form method="post">
+                        <button type="submit" name="review_request" value="TEST">Review Pending Requests</button>
+                    </form>
+                {% endif %}
+            
             </div>
-            <div class="column right">
-                <h1>Work From Home Days</h1>
+            <div class = "column middle">
+                <div class = "box">
+                    <h1>Leave Requests</h1>
+                </div>
+            </div>
+            <div class = "column right">
+                <div class = "box">
+                    <h1>Work From Home Days</h1>
+                </div>
             </div>
         </div>
-
-        <h3 id="currentWeek"></h3>
-
-        <!-- <h3>Existing Leave Requests:</h3>
-        <ul id="leaveRequests"></ul>
-        <p><a href="index.html">Logout</a></p> -->
-
-        <!-- <div id="weekColumns" class="week-columns"></div> -->
-
-        <!-- <form id="leaveForm" style="display: none; position: absolute;"> -->
-            <!-- <label for="leaveDate">Selected day:</label> -->
-            <!-- <span id="selectedDay"></span> Display the selected day -->
-            <!-- <input type="hidden" id="leaveDate" name="leaveDate" required> -->
-
-            <!-- Display the input box dynamically -->
-            <!-- <div id="leaveTypeInputContainer" style="display: none;"> -->
-                <!-- <label for="leaveType">Leave Type:</label> -->
-                <!-- <input type="text" id="leaveType" name="leaveType" required> -->
-            <!-- </div> -->
-
-            <!-- <button type="button" onclick="submitLeaveRequest()">Submit Leave Request</button> -->
-            <!-- <button type="button" onclick="cancelLeaveRequest()">Cancel</button> -->
-        <!-- </form> -->
 
     </div>
 
 </body>
 </html>
-
