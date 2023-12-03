@@ -15,29 +15,57 @@ app.secret_key = credentials['secret_key']
 
 @app.route("/")
 def home():
-    try:
-        return redirect(url_for('dashboard', username=session['username']))
-    except KeyError:
+    logged_in = valid_session()
+    if logged_in:
+        return redirect(url_for('dashboard', username=logged_in))
+    else:
         return redirect(url_for('login'))
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    error = None
-    if request.method == 'POST':
-        user = DB.ret_employee_pwd(request.form['username'], request.form['password'])
-        if user == []:
-            error = "Invalid credentials. Please try again."
-        else:
-            session['username'] = request.form['username']
-            return redirect(url_for('dashboard', username=request.form['username']))
-    
-    return render_template('login.html', err_message=error)
+    logged_in = valid_session()
+    if logged_in:
+        return redirect(url_for('dashboard', username=logged_in))
+    else:
+        error = None
+        if request.method == 'POST':
+            user = DB.ret_employee_pwd(request.form['username'], request.form['password'])
+            if user == []:
+                error = "Invalid credentials. Please try again."
+            else:
+                session['username'] = request.form['username']
+                return redirect(url_for('dashboard', username=request.form['username']))
+        
+        return render_template('login.html', err_message=error)
 
 
 @app.route("/dashboard/<username>", methods=["GET", "POST"])
 def dashboard(username):
-    return render_template('dashboard.html')
+    if valid_session():
+        return render_template('dashboard.html')
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route("/logout")
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('login'))
+
+
+def valid_session():
+    """
+    Checks if a user session exists
+
+    Returns:
+    bool: False if session doesn't exist
+    str: Username of logged in user
+    """
+    try:
+        return session['username']
+    except KeyError:
+        return False
 
 
 if __name__ == "__main__":
