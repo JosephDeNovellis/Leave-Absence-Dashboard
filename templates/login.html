@@ -8,6 +8,9 @@
 </head>
 <body class = body>
     <div class="container">
+        {% if err_message %}
+            <p class="error"><strong></strong> {{ err_message }}
+        {% endif %} 
         <form id="loginForm" action="" method="post">
             <label for="username">Employee Email:</label>
             <input type="text" placeholder="example@domain.com" id="username" name="username" value="{{ request.form.username }}" required>
@@ -17,9 +20,6 @@
 
             <button type="submit">Login</button>
         </form>
-        {% if err_message %}
-            <p class="error"><strong></strong> {{ err_message }}
-        {% endif %}
     </div>
 </body>
 </html>

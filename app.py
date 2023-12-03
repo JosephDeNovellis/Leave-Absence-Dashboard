@@ -1,6 +1,7 @@
 from db_interactions import DB_Interface 
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import json
+import time
 import datetime
 
 file = open('secrets.json')
@@ -36,7 +37,7 @@ def login():
             else:
                 session['username'] = request.form['username']
                 return redirect(url_for('dashboard', username=request.form['username']))
-        
+            
         return render_template('login.html', err_message=error)
 
 
