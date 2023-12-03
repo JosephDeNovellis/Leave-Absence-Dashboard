@@ -188,7 +188,7 @@ class DB_Interface:
         req_id (int): The id of the request to be deleted
         """
         try:
-            DB_Interface.db_cursor.execute("DELETE FROM time_off_request WHERE empl_email = '" + email + "' AND req_id = '" + req_id + "';")
+            DB_Interface.db_cursor.execute("DELETE FROM time_off_request WHERE empl_email = '" + email + "' AND req_id = '" + str(req_id) + "';")
             DB_Interface.con.commit()
             print(DB_Interface.db_cursor.rowcount, "Leave request record(s) deleted.")
         except Exception as e:
@@ -202,14 +202,14 @@ class DB_Interface:
         Parameters:
         email (str): The email of the request to be deleted
         req_id (int): The id of the request to be deleted
-        status (str): Either APPROVED or DENIED
+        status (str): Either PENDING, APPROVED or DENIED
         """
         try:
-            DB_Interface.db_cursor.execute("UPDATE time_off_request SET req_status = '" + status + "' WHERE empl_email = '" + email + "' AND req_id = '" + req_id + "';")
+            DB_Interface.db_cursor.execute("UPDATE time_off_request SET req_status = '" + status + "' WHERE empl_email = '" + email + "' AND req_id = " + str(req_id) + ";")
             DB_Interface.con.commit()
             print(DB_Interface.db_cursor.rowcount, "Leave request record updated.")
         except Exception as e:
-            print("Error deleting record:", e)
+            print("Error updating record:", e)
 
 
     def ret_leave_request(self, empl_email: str) -> list:
@@ -236,7 +236,7 @@ class DB_Interface:
         Returns:
         list: A list containing the database entries for the leave requests, or an empty list if no entries exist
         """
-        DB_Interface.db_cursor.execute("SELECT t.* FROM time_off_request t, leave_absence_db.employee e WHERE e.empl_email = t.empl_email AND e.manager_email = '" + manager_email + "';")
+        DB_Interface.db_cursor.execute("SELECT t.* FROM time_off_request t, employee e WHERE e.empl_email = t.empl_email AND e.manager_email = '" + manager_email + "' ORDER BY t.req_start_date;")
         return(DB_Interface.db_cursor.fetchall())
 
 
@@ -251,7 +251,7 @@ class DB_Interface:
         date_formatted = self.__format_date(date)
 
         try:
-            DB_Interface.db_cursor.execute("INSERT INTO wfh_day (empl_email, req_date) VALUES ('" + email + "', '" + date_formatted + "');")
+            DB_Interface.db_cursor.execute("INSERT INTO wfh_day (empl_email, wfh_date) VALUES ('" + email + "', '" + date_formatted + "');")
             DB_Interface.con.commit()
             print(DB_Interface.db_cursor.rowcount, "Work from home day record inserted.")
         except Exception as e:
