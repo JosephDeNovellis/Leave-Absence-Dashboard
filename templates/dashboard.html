@@ -4,25 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <title>Leave Dashboard</title>
+    <title>{{ session['name'] }}'s Dashboard</title>
 </head>
 
 <body class="dashboard-body">
     <div class="dash-container">
-        <h2 id="welcomeMessage"></h2>
-
-        <p> Welcome, {{ session['name'] }}!
-        
-        <hr>
+        <h2 id="welcomeMessage">Welcome, {{ session['name'] }}!</h2>
 
         <div class = "row">
             <div class = "column left">
                 {% if manager %}
-                    <form method="post">
-                        <button type="submit" name="review_request" value="TEST">Review Pending Requests</button>
+                    <form action="{{ url_for('review') }}" method="post">
+                        <button type="submit" name="review_request" value="REVIEW">Review Pending Requests</button>
                     </form>
                 {% endif %}
-            
             </div>
             <div class = "column middle">
                 <div class = "box">
@@ -39,6 +34,29 @@
             
                         <button type="submit">Submit Leave Request</button>
                     </form>
+
+                    {% if requests %}
+                        <table class="leave_requests">
+                            <tr>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                            </tr>
+
+                            {% for request in requests %}
+                                <tr>
+                                    <td>{{ request['req_start_date'] }}</td>
+                                    <td>{{ request['req_end_date'] }}</td>
+                                    <td>{{ request['req_reason'] }}</td>
+                                    <td><b>{{ request['req_status'] }}</b></td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% else %}
+                        <p style="margin-top:10px">No Leave Requests</p>
+                    {% endif %}
+
                 </div>
             </div>
 
@@ -52,12 +70,23 @@
                         <button type="submit">Submit Work From Home Request</button>
                     </form>
 
+                    {% if days %}
+                        <table class="wfh_days">
+                            <tr>
+                                <th>Date</th>
+                            </tr>
+
+                            {% for day in days %}
+                                <tr>
+                                    <td>{{ day['wfh_date'] }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% else %}
+                        <p style="margin-top:10px">No Scheduled Work From Home Days</p>
+                    {% endif %}
 
                 </div>
             </div>
-        </div>
-
-    </div>
-
 </body>
 </html>

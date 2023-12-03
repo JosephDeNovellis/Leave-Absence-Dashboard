@@ -25,7 +25,7 @@ body {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    
+
 }
 
 .dash-container{
@@ -84,7 +84,7 @@ button {
     position: absolute; /* Added this line */
 }
 
-div p { 
+div p {
     margin-top: 0;
 }
 
@@ -142,4 +142,40 @@ div p {
     background-color: #222121;
     top: 0;
     bottom: 0;
+}
+
+.leave_requests {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.leave_requests th {
+    padding: 10px;
+    background: rgb(163, 247, 163);
+    border: 1px solid black;
+}
+
+.leave_requests td {
+    border: 1px solid black;
+    background-color: rgb(230, 230, 230);
+    padding: 10px;
+}
+
+.wfh_days {
+    margin-top: 20px;
+    width: 50%;
+    border-collapse: collapse;
+}
+
+.wfh_days th {
+    padding: 10px;
+    background: rgb(163, 247, 163);
+    border: 1px solid black;
+}
+
+.wfh_days td {
+    border: 1px solid black;
+    background-color: rgb(230, 230, 230);
+    padding: 10px;
 }

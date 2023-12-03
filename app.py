@@ -32,11 +32,12 @@ def login():
         error = None
         if request.method == 'POST':
             user = DB.ret_employee_pwd(request.form['username'], request.form['password'])
+            print(user)
             if user == []:
                 error = "Invalid credentials. Please try again."
             else:
                 session['username'] = request.form['username']
-                session['name'] = user[0][1]
+                session['name'] = user[0]['empl_name']
                 return redirect(url_for('dashboard', name=session['name']))
             
         return render_template('login.html', err_message=error)
@@ -45,14 +46,12 @@ def login():
 @app.route("/dashboard/<name>", methods=["GET", "POST"])
 def dashboard(name):
     if valid_session():
-        if request.method == 'POST':
-            if request.form['review_request'] == "TEST":
-                return redirect(url_for('review'))
+        time_off_requests = DB.ret_leave_request(session['username'])
+        wfh_days = DB.ret_wfh_day(session['username'])
+        if DB.is_manager(session['username']):
+            return render_template('dashboard.html', requests=time_off_requests, days=wfh_days, manager="YES")
         else:
-            if DB.is_manager(session['username']):
-                return render_template('dashboard.html', manager="YES")
-            else:
-                return render_template('dashboard.html')
+            return render_template('dashboard.html', requests=time_off_requests, days=wfh_days)
     else:
         return redirect(url_for('login'))
     
@@ -83,10 +82,11 @@ def submit_leave_request():
             print("Error submitting leave request:", e)
             flash('Error. Please try again', 'error')
         
-        return render_template('dashboard.html')
+        return redirect(url_for('dashboard', name=session['name']))
     else:
         return redirect(url_for('login'))
     
+
 @app.route("/submit_WFH_request", methods=['POST'])
 def submit_WFH_request():
     if valid_session():
@@ -102,18 +102,9 @@ def submit_WFH_request():
             print("Error submitting leave request:", e)
             flash('Error. Please try again', 'error')
         
-        return render_template('dashboard.html')
+        return redirect(url_for('dashboard', name=session['name']))
     else:
         return redirect(url_for('login'))
-
-
-
-        
-
-
-
-
-
 
 
 @app.route("/logout")
