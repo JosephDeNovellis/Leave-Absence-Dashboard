@@ -179,15 +179,33 @@ class DB_Interface:
             print("Error inserting record:", e)
 
 
-    def del_leave_request(self, email, req_id: int):
+    def del_leave_request(self, email: str, req_id: int):
         """
         Delete a database entry for a leave request
         
+        Parameters:
         email (str): The email of the request to be deleted
         req_id (int): The id of the request to be deleted
         """
         try:
-            DB_Interface.db_cursor.execute("DELETE FROM employee WHERE empl_email = '" + email + "' AND req_id = '" + req_id + "';")
+            DB_Interface.db_cursor.execute("DELETE FROM time_off_request WHERE empl_email = '" + email + "' AND req_id = '" + req_id + "';")
+            DB_Interface.con.commit()
+            print(DB_Interface.db_cursor.rowcount, "Leave request record(s) deleted.")
+        except Exception as e:
+            print("Error deleting record:", e)
+
+    
+    def update_leave_request(self, email: str, req_id: int, status: str):
+        """
+        Update a database entry for a leave request
+        
+        Parameters:
+        email (str): The email of the request to be deleted
+        req_id (int): The id of the request to be deleted
+        status (str): Either APPROVED or DENIED
+        """
+        try:
+            DB_Interface.db_cursor.execute("UPDATE time_off_request SET req_status = '" + status + "' WHERE empl_email = '" + email + "' AND req_id = '" + req_id + "';")
             DB_Interface.con.commit()
             print(DB_Interface.db_cursor.rowcount, "Leave request record(s) deleted.")
         except Exception as e:
@@ -218,7 +236,7 @@ class DB_Interface:
         Returns:
         list: A list containing the database entries for the leave requests, or an empty list if no entries exist
         """
-        DB_Interface.db_cursor.execute("SELECT t.* FROM leave_absence_db.time_off_request t, leave_absence_db.employee e WHERE e.empl_email = t.empl_email AND e.manager_email = '" + manager_email + "';")
+        DB_Interface.db_cursor.execute("SELECT t.* FROM time_off_request t, leave_absence_db.employee e WHERE e.empl_email = t.empl_email AND e.manager_email = '" + manager_email + "';")
         return(DB_Interface.db_cursor.fetchall())
 
 
