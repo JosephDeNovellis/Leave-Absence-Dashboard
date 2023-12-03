@@ -24,7 +24,7 @@ class DB_Interface:
                 password=credentials['password'],
                 database=credentials['database']
             )
-            DB_Interface.db_cursor = DB_Interface.con.cursor()
+            DB_Interface.db_cursor = DB_Interface.con.cursor(dictionary=True)
         else:
             return
 
@@ -222,7 +222,7 @@ class DB_Interface:
         Returns:
         list: A list containing the database entries for the leave requests, or an empty list if no entries exist
         """
-        DB_Interface.db_cursor.execute("SELECT * FROM time_off_request WHERE empl_email = '" + empl_email + "';")
+        DB_Interface.db_cursor.execute("SELECT * FROM time_off_request WHERE empl_email = '" + empl_email + "' ORDER BY req_start_date;")
         return(DB_Interface.db_cursor.fetchall())
     
 
@@ -286,7 +286,7 @@ class DB_Interface:
         Returns:
         list: A list containing the database entries for the work from home days, or an empty list if no entries exist
         """
-        DB_Interface.db_cursor.execute("SELECT * FROM wfh_day WHERE empl_email = '" + email + "';")
+        DB_Interface.db_cursor.execute("SELECT * FROM wfh_day WHERE empl_email = '" + email + "' ORDER BY wfh_date;")
         return(DB_Interface.db_cursor.fetchall())
 
 
@@ -301,22 +301,3 @@ class DB_Interface:
         str: String representation of the date, in the format YYYY-MM-DD
         """
         return('-'.join(str(day) for day in [date.year, date.month, date.day]))
-
-# file = open('secrets.json')
-# credentials = json.load(file)
-# file.close()
-# print(credentials)
-
-# mydb = mysql.connector.connect(
-#   host=credentials['host'],
-#   user=credentials['user'],
-#   password=credentials['password'],
-#   database=credentials['database']
-# )
-
-# mycursor = mydb.cursor()
-
-# mycursor.execute("SELECT * FROM employee")
-
-# myresult = mycursor.fetchall()
-# print(myresult)
