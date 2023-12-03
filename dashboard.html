@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Leave Dashboard</title>
+</head>
+
+<body class="dashboard-body">
+    <div class="dash-container">
+        <h2 id="welcomeMessage"></h2>
+
+        <p> Welcome, {{ session['name'] }}!
+        
+        <hr>
+
+        <div class = "row">
+            <div class = "column left">
+                {% if manager %}
+                    <form method="post">
+                        <button type="submit" name="review_request" value="TEST">Review Pending Requests</button>
+                    </form>
+                {% endif %}
+            
+            </div>
+            <div class = "column middle">
+                <div class = "box">
+                    <h1>Leave Requests</h1>
+                </div>
+            </div>
+            <div class = "column right">
+                <div class = "box">
+                    <h1>Work From Home Days</h1>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
