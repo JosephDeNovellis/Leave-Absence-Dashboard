@@ -30,10 +30,20 @@
                         <input type="date" id="endDate" name="endDate" required>
             
                         <label for="reason">Reason:</label>
-                        <input type="text" id="reason" name="reason">
+                        <input type="text" id="reason" name="reason" required>
             
                         <button type="submit">Submit Leave Request</button>
                     </form>
+
+                    {% with leave_req_errors = get_flashed_messages(category_filter=["leave_request_error"]) %}
+                    {% if leave_req_errors %}
+                    <ul class="flashes">
+                        {% for error in leave_req_errors %}
+                            <div class="message_flash">{{ error }}</div>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% endwith %}
 
                     {% if requests %}
                         <table class="leave_requests">
@@ -69,6 +79,16 @@
 
                         <button type="submit">Submit Work From Home Request</button>
                     </form>
+
+                    {% with wfh_errors = get_flashed_messages(category_filter=["wfh_error"]) %}
+                    {% if wfh_errors %}
+                    <ul class="flashes">
+                        {% for error in wfh_errors %}
+                            <div class="message_flash">{{ error }}</div>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% endwith %}
 
                     {% if days %}
                         <table class="wfh_days">

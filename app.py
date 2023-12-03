@@ -48,6 +48,7 @@ def dashboard(name):
     if valid_session():
         time_off_requests = DB.ret_leave_request(session['username'])
         wfh_days = DB.ret_wfh_day(session['username'])
+
         if DB.is_manager(session['username']):
             return render_template('dashboard.html', requests=time_off_requests, days=wfh_days, manager="YES")
         else:
@@ -71,16 +72,18 @@ def submit_leave_request():
         start_date = request.form['startDate']
         end_date = request.form['endDate']
         reason = request.form.get('reason', '')
+        error=None
 
         start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
         end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
 
-        try:
-            DB.add_leave_request(username, start_date, end_date, reason)
-            flash('Leave request submitted successfully', 'success')
-        except Exception as e:
-            print("Error submitting leave request:", e)
-            flash('Error. Please try again', 'error')
+        if end_date < start_date:
+            flash('End Date Cannot Be Before Start Date', 'leave_request_error')
+        elif start_date < datetime.datetime.today() - datetime.timedelta(1) or end_date < datetime.datetime.today() - datetime.timedelta(1):
+            flash('Selected Dates Cannot Be Past Dates', 'leave_request_error')
+        else:
+            if DB.add_leave_request(username, start_date, end_date, reason) == False:
+                flash('Error. Please try again', 'leave_request_error')
         
         return redirect(url_for('dashboard', name=session['name']))
     else:
@@ -95,13 +98,12 @@ def submit_WFH_request():
 
         date = datetime.datetime.strptime(date, '%Y-%m-%d')
 
-        try:
-            DB.add_wfh_day(username, date)
-            flash('WFH request submitted successfully', 'success')
-        except Exception as e:
-            print("Error submitting leave request:", e)
-            flash('Error. Please try again', 'error')
-        
+        if date <= (datetime.datetime.today() - datetime.timedelta(1)):
+            flash('Selected Date Cannot Be a Past Date', 'wfh_error')
+        else:
+            if DB.add_wfh_day(username, date) == False:
+                flash('Error. Please try again', 'wfh_error')
+            
         return redirect(url_for('dashboard', name=session['name']))
     else:
         return redirect(url_for('login'))

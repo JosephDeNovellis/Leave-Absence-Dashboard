@@ -53,6 +53,7 @@ class DB_Interface:
             print(DB_Interface.db_cursor.rowcount, "Employee record inserted.")
         except Exception as e:
             print("Error inserting record:", e)
+            return False
 
 
     def del_employee(self, email: str):
@@ -68,6 +69,7 @@ class DB_Interface:
             print(DB_Interface.db_cursor.rowcount, "Employee record(s) deleted.")
         except Exception as e:
             print("Error deleting record:", e)
+            return False
 
 
     def ret_employee(self, email: str) -> list:
@@ -98,6 +100,7 @@ class DB_Interface:
         DB_Interface.db_cursor.execute("SELECT * FROM employee WHERE empl_email = '" + email + "' AND empl_pwd = MD5('" + password + "');")
         return(DB_Interface.db_cursor.fetchall())
     
+
     def is_manager(self, email: str) -> bool:
         """
         Parameters:
@@ -126,6 +129,7 @@ class DB_Interface:
             print(DB_Interface.db_cursor.rowcount, "Company record(s) inserted.")
         except Exception as e:
             print("Error inserting record:", e)
+            return False
 
 
     def del_company(self, company_name: str):
@@ -141,6 +145,7 @@ class DB_Interface:
             print(DB_Interface.db_cursor.rowcount, "Company record(s) deleted.")
         except Exception as e:
             print("Error deleting record:", e)
+            return False
 
 
     def ret_company(self, company_name: str) -> list:
@@ -177,6 +182,7 @@ class DB_Interface:
             print(DB_Interface.db_cursor.rowcount, "Leave request record inserted.")
         except Exception as e:
             print("Error inserting record:", e)
+            return False
 
 
     def del_leave_request(self, email: str, req_id: int):
@@ -193,6 +199,7 @@ class DB_Interface:
             print(DB_Interface.db_cursor.rowcount, "Leave request record(s) deleted.")
         except Exception as e:
             print("Error deleting record:", e)
+            return False
 
     
     def update_leave_request(self, email: str, req_id: int, status: str):
@@ -210,6 +217,7 @@ class DB_Interface:
             print(DB_Interface.db_cursor.rowcount, "Leave request record updated.")
         except Exception as e:
             print("Error updating record:", e)
+            return False
 
 
     def ret_leave_request(self, empl_email: str) -> list:
@@ -256,6 +264,7 @@ class DB_Interface:
             print(DB_Interface.db_cursor.rowcount, "Work from home day record inserted.")
         except Exception as e:
             print("Error inserting record:", e)
+            return False
 
 
     def del_wfh_day(self, email: str, date: datetime):
@@ -274,6 +283,7 @@ class DB_Interface:
             print(DB_Interface.db_cursor.rowcount, "Work from home day record(s) deleted.")
         except Exception as e:
             print("Error deleting record:", e)
+            return False
 
 
     def ret_wfh_day(self, email: str) -> list:
