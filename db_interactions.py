@@ -207,7 +207,7 @@ class DB_Interface:
         try:
             DB_Interface.db_cursor.execute("UPDATE time_off_request SET req_status = '" + status + "' WHERE empl_email = '" + email + "' AND req_id = '" + req_id + "';")
             DB_Interface.con.commit()
-            print(DB_Interface.db_cursor.rowcount, "Leave request record(s) deleted.")
+            print(DB_Interface.db_cursor.rowcount, "Leave request record updated.")
         except Exception as e:
             print("Error deleting record:", e)
 
