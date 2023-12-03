@@ -65,6 +65,57 @@ def review():
         return redirect(url_for('login'))
 
 
+@app.route("/submit_leave_request", methods=["POST"])
+def submit_leave_request():
+    if valid_session():
+        username = session['username']
+        start_date = request.form['startDate']
+        end_date = request.form['endDate']
+        reason = request.form.get('reason', '')
+
+        start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
+        end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
+
+        try:
+            DB.add_leave_request(username, start_date, end_date, reason)
+            flash('Leave request submitted successfully', 'success')
+        except Exception as e:
+            print("Error submitting leave request:", e)
+            flash('Error. Please try again', 'error')
+        
+        return render_template('dashboard.html')
+    else:
+        return redirect(url_for('login'))
+    
+@app.route("/submit_WFH_request", methods=['POST'])
+def submit_WFH_request():
+    if valid_session():
+        username = session['username']
+        date = request.form['date']
+
+        date = datetime.datetime.strptime(date, '%Y-%m-%d')
+
+        try:
+            DB.add_wfh_day(username, date)
+            flash('WFH request submitted successfully', 'success')
+        except Exception as e:
+            print("Error submitting leave request:", e)
+            flash('Error. Please try again', 'error')
+        
+        return render_template('dashboard.html')
+    else:
+        return redirect(url_for('login'))
+
+
+
+        
+
+
+
+
+
+
+
 @app.route("/logout")
 def logout():
     session.pop('username', None)
