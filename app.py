@@ -18,7 +18,7 @@ app.secret_key = credentials['secret_key']
 def home():
     logged_in = valid_session()
     if logged_in:
-        return redirect(url_for('dashboard', username=logged_in))
+        return redirect(url_for('dashboard', name=logged_in))
     else:
         return redirect(url_for('login'))
 
@@ -27,7 +27,7 @@ def home():
 def login():
     logged_in = valid_session()
     if logged_in:
-        return redirect(url_for('dashboard', username=logged_in))
+        return redirect(url_for('dashboard', name=logged_in))
     else:
         error = None
         if request.method == 'POST':
@@ -36,15 +36,31 @@ def login():
                 error = "Invalid credentials. Please try again."
             else:
                 session['username'] = request.form['username']
-                return redirect(url_for('dashboard', username=request.form['username']))
+                session['name'] = user[0][1]
+                return redirect(url_for('dashboard', name=session['name']))
             
         return render_template('login.html', err_message=error)
 
 
-@app.route("/dashboard/<username>", methods=["GET", "POST"])
-def dashboard(username):
+@app.route("/dashboard/<name>", methods=["GET", "POST"])
+def dashboard(name):
     if valid_session():
-        return render_template('dashboard.html')
+        if request.method == 'POST':
+            if request.form['review_request'] == "TEST":
+                return redirect(url_for('review'))
+        else:
+            if DB.is_manager(session['username']):
+                return render_template('dashboard.html', manager="YES")
+            else:
+                return render_template('dashboard.html')
+    else:
+        return redirect(url_for('login'))
+    
+
+@app.route("/review", methods=["GET", "POST"])
+def review():
+    if valid_session():
+        return render_template('review.html')
     else:
         return redirect(url_for('login'))
 
@@ -52,7 +68,8 @@ def dashboard(username):
 @app.route("/logout")
 def logout():
     session.pop('username', None)
-    return redirect(url_for('login'))
+    session.pop('name', None)
+    return redirect(url_for('review'))
 
 
 def valid_session():
@@ -61,10 +78,10 @@ def valid_session():
 
     Returns:
     bool: False if session doesn't exist
-    str: Username of logged in user
+    str: Name of logged in user
     """
     try:
-        return session['username']
+        return session['name']
     except KeyError:
         return False
 

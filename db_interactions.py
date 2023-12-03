@@ -97,6 +97,19 @@ class DB_Interface:
         """
         DB_Interface.db_cursor.execute("SELECT * FROM employee WHERE empl_email = '" + email + "' AND empl_pwd = MD5('" + password + "');")
         return(DB_Interface.db_cursor.fetchall())
+    
+    def is_manager(self, email: str) -> bool:
+        """
+        Parameters:
+        email (str): The email of the employee
+
+        Returns: True if the employee is a manager, False otherwise
+        """
+        DB_Interface.db_cursor.execute("SELECT * FROM employee WHERE manager_email = '" + email + "';")
+        if DB_Interface.db_cursor.fetchall() == []:
+            return False
+        else:
+            return True
 
 
     def add_company(self, company_name: str):
