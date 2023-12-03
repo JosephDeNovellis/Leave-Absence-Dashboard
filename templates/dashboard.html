@@ -27,11 +27,32 @@
             <div class = "column middle">
                 <div class = "box">
                     <h1>Leave Requests</h1>
+                    <form action="{{ url_for('submit_leave_request') }}" method="post">
+                        <label for="startDate">Start Date:</label>
+                        <input type="date" id="startDate" name="startDate" required>
+            
+                        <label for="endDate">End Date:</label>
+                        <input type="date" id="endDate" name="endDate" required>
+            
+                        <label for="reason">Reason:</label>
+                        <input type="text" id="reason" name="reason">
+            
+                        <button type="submit">Submit Leave Request</button>
+                    </form>
                 </div>
             </div>
+
             <div class = "column right">
                 <div class = "box">
                     <h1>Work From Home Days</h1>
+                    <form action="{{url_for('submit_WFH_request')}}" method="post">
+                        <label for="date">Date:</label>
+                        <input type="date" id="date" name="date" required>
+
+                        <button type="submit">Submit Work From Home Request</button>
+                    </form>
+
+
                 </div>
             </div>
         </div>
