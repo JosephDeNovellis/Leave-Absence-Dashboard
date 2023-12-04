@@ -3,6 +3,7 @@ body {
     display: flex;
     min-height: 100vh;
 }
+
 .body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
@@ -37,7 +38,6 @@ body {
     display: flex;
     flex-direction: column;
     flex: 1; /* Make the container take up all available space */
-
 }
 
 label {
@@ -120,8 +120,17 @@ div p {
 .middle{
     width: 45%;
 }
+
 .right {
     width: 45%;
+}
+
+.rev_column1{
+    width: 10%;
+}
+
+.rev_column2 {
+    width: 90%;
 }
 
 .row {
@@ -178,4 +187,32 @@ div p {
     border: 1px solid black;
     background-color: rgb(230, 230, 230);
     padding: 10px;
+}
+
+.message_flash { 
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.review-container{
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Make the container take up all available space */
+}
+
+.no_data { 
+    font-size: 18px;
+}
+
+.approve_button { 
+    background-color: green;
+}
+
+.decline_button {
+    background-color: red;
 }

@@ -60,7 +60,17 @@ def dashboard(name):
 @app.route("/review", methods=["GET", "POST"])
 def review():
     if valid_session():
-        return render_template('review.html')
+        if request.method == 'POST':
+            if 'approve' in request.form:
+                DB.update_leave_request(request.form['approve'], "APPROVED")
+            else:
+                DB.update_leave_request(request.form['decline'], "DECLINED")
+
+        pending_requests = DB.ret_status_leave_requests(session['username'], "PENDING")
+        if valid_session():
+            return render_template('review.html', requests=pending_requests)
+        else:
+            return redirect(url_for('login'))
     else:
         return redirect(url_for('login'))
 
@@ -78,9 +88,9 @@ def submit_leave_request():
         end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
 
         if end_date < start_date:
-            flash('End Date Cannot Be Before Start Date', 'leave_request_error')
+            flash('Error. End Date Cannot Be Before Start Date', 'leave_request_error')
         elif start_date < datetime.datetime.today() - datetime.timedelta(1) or end_date < datetime.datetime.today() - datetime.timedelta(1):
-            flash('Selected Dates Cannot Be Past Dates', 'leave_request_error')
+            flash('Error. Selected Dates Cannot Be Past Dates', 'leave_request_error')
         else:
             if DB.add_leave_request(username, start_date, end_date, reason) == False:
                 flash('Error. Please try again', 'leave_request_error')
@@ -99,7 +109,7 @@ def submit_WFH_request():
         date = datetime.datetime.strptime(date, '%Y-%m-%d')
 
         if date <= (datetime.datetime.today() - datetime.timedelta(1)):
-            flash('Selected Date Cannot Be a Past Date', 'wfh_error')
+            flash('Error. Selected Date Cannot Be a Past Date', 'wfh_error')
         else:
             if DB.add_wfh_day(username, date) == False:
                 flash('Error. Please try again', 'wfh_error')

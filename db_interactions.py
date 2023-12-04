@@ -202,17 +202,16 @@ class DB_Interface:
             return False
 
     
-    def update_leave_request(self, email: str, req_id: int, status: str):
+    def update_leave_request(self, req_id: int, status: str):
         """
         Update a database entry for a leave request
         
         Parameters:
-        email (str): The email of the request to be deleted
-        req_id (int): The id of the request to be deleted
+        req_id (int): The id of the request to be updated
         status (str): Either PENDING, APPROVED or DENIED
         """
         try:
-            DB_Interface.db_cursor.execute("UPDATE time_off_request SET req_status = '" + status + "' WHERE empl_email = '" + email + "' AND req_id = " + str(req_id) + ";")
+            DB_Interface.db_cursor.execute("UPDATE time_off_request SET req_status = '" + status + "' WHERE req_id = " + str(req_id) + ";")
             DB_Interface.con.commit()
             print(DB_Interface.db_cursor.rowcount, "Leave request record updated.")
         except Exception as e:
@@ -245,6 +244,21 @@ class DB_Interface:
         list: A list containing the database entries for the leave requests, or an empty list if no entries exist
         """
         DB_Interface.db_cursor.execute("SELECT t.* FROM time_off_request t, employee e WHERE e.empl_email = t.empl_email AND e.manager_email = '" + manager_email + "' ORDER BY t.req_start_date;")
+        return(DB_Interface.db_cursor.fetchall())
+    
+
+    def ret_status_leave_requests(self, manager_email: str, status: str) -> list:
+        """
+        Retrieves all leave requests with the provided status associated with an manager's subordinates
+
+        Parameters:
+        manager_email (str): The email of the manager
+        status (str): The status of the leave request
+
+        Returns:
+        list: A list containing the database entries for the leave requests, or an empty list if no entries exist
+        """
+        DB_Interface.db_cursor.execute("SELECT e.empl_name, t.* FROM time_off_request t, employee e WHERE t.req_status = '" + status + "' AND e.empl_email = t.empl_email AND e.manager_email = '" + manager_email + "' ORDER BY t.req_start_date;")
         return(DB_Interface.db_cursor.fetchall())
 
 

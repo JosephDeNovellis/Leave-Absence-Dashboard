@@ -4,6 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <title>Review Requests</title>
+    <title>{{ session['name'] }} - Review Requests</title>
 </head>
-<p>Test</p>
+
+<body class="request-review">
+    <div class="review-container">
+        <div class = "row">
+            <div class = "rev_column1">
+                <form action="{{ url_for('dashboard', name=session['name']) }}" method="get">
+                    <button type="submit" name="review_request" value="REVIEW">Return to My Dashboard</button>
+                </form>
+            </div>
+            <div class = "rev_column2">
+                <div class = "box">
+                    <h1>Pending Leave Requests</h1>
+
+                    {% with leave_req_errors = get_flashed_messages(category_filter=["leave_request_error"]) %}
+                    {% if leave_req_errors %}
+                    <ul class="flashes">
+                        {% for error in leave_req_errors %}
+                            <div class="message_flash"><b>{{ error }}</b></div>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% endwith %}
+
+                    {% if requests %}
+                        <table class="leave_requests">
+                            <tr>
+                                <th>Employee</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                            </tr>
+
+                            {% for request in requests %}
+                                <tr>
+                                    <td>{{ request['empl_name'] }}</td>
+                                    <td>{{ request['req_start_date'] }}</td>
+                                    <td>{{ request['req_end_date'] }}</td>
+                                    <td>{{ request['req_reason'] }}</td>
+                                    <td>
+                                        <form action="{{ url_for('review') }}" method="post">
+                                            <button type="submit" class="approve_button" name="approve" value="{{ request['req_id'] }}">Approve</button>
+                                            <button type="submit" class="decline_button" name="decline" value="{{ request['req_id'] }}">Decline</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% else %}
+                        <p class="no_data" style="margin-top:10px">No Leave Requests To Review</p>
+                    {% endif %}
+
+                </div>
+            </div>
+</body>
+</html>
