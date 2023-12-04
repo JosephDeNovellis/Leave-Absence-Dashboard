@@ -420,9 +420,11 @@ class DB_Interface:
         week_start = self.__format_date(week_start)
         week_end = self.__format_date(week_end)
 
-        print("SELECT * FROM wfh_day WHERE empl_email = '" + email + "' AND wfh_date > '" + week_start + "' AND wfh_date < '" + week_end + "';")
-        DB_Interface.db_cursor.execute("SELECT * FROM wfh_day WHERE empl_email = '" + email + "' AND wfh_date > '" + week_start + "' AND wfh_date < '" + week_end + "';")
+        print(week_start, week_end)
+
+        DB_Interface.db_cursor.execute("SELECT * FROM wfh_day WHERE empl_email = '" + email + "' AND wfh_date >= '" + week_start + "' AND wfh_date <= '" + week_end + "';")
         existing_requests = DB_Interface.db_cursor.fetchall()
+        print(existing_requests)
         if len(existing_requests) < max_week_wfh_days:
             return True
         else:
