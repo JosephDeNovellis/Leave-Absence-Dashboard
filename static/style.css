@@ -194,6 +194,10 @@ div p {
     padding: 10px;
 }
 
+.flashes { 
+    justify-content: center;
+}
+
 .message_flash { 
     margin-top: 20px;
     font-size: 18px;
@@ -236,4 +240,13 @@ div p {
 
 .status_column {
     text-align: center;
+}
+
+.cancel_button {
+    background-color: red;
+}
+
+.wfh_days tr td:last-child { 
+    width: 1%;
+    white-space: nowrap;
 }

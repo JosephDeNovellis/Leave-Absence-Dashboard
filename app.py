@@ -46,8 +46,28 @@ def login():
 @app.route("/dashboard/<name>", methods=["GET", "POST"])
 def dashboard(name):
     if valid_session():
-        time_off_requests = DB.ret_leave_request(session['username'])
-        wfh_days = DB.ret_wfh_day(session['username'])
+        if request.method == 'POST':
+
+            if 'cancel_wfh' in request.form:
+                date = datetime.datetime.strptime(request.form['cancel_wfh'], '%Y-%m-%d')
+                if date < datetime.datetime.today():
+                    flash('Error. Cannot Cancel Past Work From Home Day', 'wfh_error')
+                else:
+                    DB.del_wfh_day(session['username'], datetime.datetime.strptime(request.form['cancel_wfh'], '%Y-%m-%d'))
+
+            elif 'cancel_leave' in request.form:
+                leave_req = DB.ret_leave_request_id(int(request.form['cancel_leave']))
+                if leave_req != []:
+                    leave_req = leave_req[0]
+                    if datetime.date.today() > leave_req['req_end_date']:
+                        flash('Error. Cannot Cancel Past Leave Request', 'leave_request_error')
+                    elif datetime.date.today() >= leave_req['req_start_date'] and datetime.date.today() <= leave_req['req_end_date']:
+                        flash('Error. Cannot Cancel Ongoing Leave Request', 'leave_request_error')
+                    else:
+                        DB.del_leave_request(leave_req['req_id'])
+
+        time_off_requests = DB.ret_leave_request_week(session['username'], datetime.datetime.today())
+        wfh_days = DB.ret_wfh_day_week(session['username'], datetime.datetime.today())
 
         if DB.is_manager(session['username']):
             return render_template('dashboard.html', requests=time_off_requests, days=wfh_days, manager="YES")
@@ -111,6 +131,12 @@ def submit_WFH_request():
 
         if date <= (datetime.datetime.today() - datetime.timedelta(1)):
             flash('Error. Selected Date Cannot Be a Past Date', 'wfh_error')
+        elif date.weekday() == 5 or date.weekday() == 6:
+            flash('Error. Cannot Schedule Work From Home Days on Weekends', 'wfh_error')
+        elif DB.wfh_day_overlapping(username, date):
+            flash('Error. Date is Already Booked', 'wfh_error')
+        elif not DB.valid_wfh_day(username, date, 3):
+            flash('Error. Cannot Schedule More Than 3 WFH Days Per Week', 'wfh_error')
         else:
             if DB.add_wfh_day(username, date) == False:
                 flash('Error. Please try again', 'wfh_error')

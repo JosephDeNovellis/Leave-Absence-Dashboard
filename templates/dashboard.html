@@ -56,6 +56,7 @@
                                 <th>End Date</th>
                                 <th>Reason</th>
                                 <th>Status</th>
+                                <th>Actions</th>
                             </tr>
 
                             {% for request in requests %}
@@ -64,11 +65,16 @@
                                     <td>{{ request['req_end_date'] }}</td>
                                     <td>{{ request['req_reason'] }}</td>
                                     <td class="status_column"><b>{{ request['req_status'] }}</b></td>
+                                    <td>
+                                        <form action="{{ url_for('dashboard', name=session['name']) }}" method="post">
+                                            <button type="submit" class="cancel_button" name="cancel_leave" value="{{ request['req_id'] }}">Cancel</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </table>
                     {% else %}
-                        <p class="no_data" style="margin-top:10px">No Leave Requests</p>
+                        <p class="no_data" style="margin-top:10px">No Current or Future Leave Requests</p>
                     {% endif %}
 
                 </div>
@@ -98,16 +104,22 @@
                         <table class="wfh_days">
                             <tr>
                                 <th>Date</th>
+                                <th>Actions</th>
                             </tr>
 
                             {% for day in days %}
                                 <tr>
                                     <td>{{ day['wfh_date'] }}</td>
+                                    <td>
+                                        <form action="{{ url_for('dashboard', name=session['name']) }}" method="post">
+                                            <button type="submit" class="cancel_button" name="cancel_wfh" value="{{ day['wfh_date'] }}">Cancel</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </table>
                     {% else %}
-                        <p class="no_data" style="margin-top:10px">No Scheduled Work From Home Days</p>
+                        <p class="no_data" style="margin-top:10px">No Scheduled Work From Home Days This Week</p>
                     {% endif %}
 
                 </div>

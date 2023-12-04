@@ -185,16 +185,15 @@ class DB_Interface:
             return False
 
 
-    def del_leave_request(self, email: str, req_id: int):
+    def del_leave_request(self, req_id: int):
         """
         Delete a database entry for a leave request
         
         Parameters:
-        email (str): The email of the request to be deleted
         req_id (int): The id of the request to be deleted
         """
         try:
-            DB_Interface.db_cursor.execute("DELETE FROM time_off_request WHERE empl_email = '" + email + "' AND req_id = '" + str(req_id) + "';")
+            DB_Interface.db_cursor.execute("DELETE FROM time_off_request WHERE req_id = '" + str(req_id) + "';")
             DB_Interface.con.commit()
             print(DB_Interface.db_cursor.rowcount, "Leave request record(s) deleted.")
         except Exception as e:
@@ -230,6 +229,36 @@ class DB_Interface:
         list: A list containing the database entries for the leave requests, or an empty list if no entries exist
         """
         DB_Interface.db_cursor.execute("SELECT * FROM time_off_request WHERE empl_email = '" + empl_email + "' ORDER BY req_start_date;")
+        return(DB_Interface.db_cursor.fetchall())
+    
+
+    def ret_leave_request_week(self, email: str, date: datetime) -> list:
+        """
+        Retrieves all current and future leave requests associated with an employee
+        
+        Parameters:
+        empl_email (str): The email of the employee
+        date (datetime): A date in the week to search
+
+        Returns:
+        list: A list containing the database entries for the leave requests, or an empty list if no entries exist
+        """
+        date = self.__format_date(date)
+        DB_Interface.db_cursor.execute("SELECT * FROM time_off_request WHERE empl_email = '" + email + "' AND req_start_date > '" + date + "';")
+        return(DB_Interface.db_cursor.fetchall())
+    
+
+    def ret_leave_request_id(self, req_id: int) -> list:
+        """
+        Retrieves a request using its ID
+        
+        Parameters:
+        req_id (int): The request ID
+
+        Returns:
+        dic: A list containing the database entry for the leave request, or an empty list if no entry exists
+        """
+        DB_Interface.db_cursor.execute("SELECT * FROM time_off_request WHERE req_id = " + str(req_id) + " ORDER BY req_start_date;")
         return(DB_Interface.db_cursor.fetchall())
     
 
@@ -333,7 +362,72 @@ class DB_Interface:
         """
         DB_Interface.db_cursor.execute("SELECT * FROM wfh_day WHERE empl_email = '" + email + "' ORDER BY wfh_date;")
         return(DB_Interface.db_cursor.fetchall())
+    
 
+    def ret_wfh_day_week(self, email: str, date: datetime) -> list:
+        """
+        Retrieves all work from home days associated with an employee for the current week of the given day and beyond
+        
+        Parameters:
+        email (str): The email of the employee
+        date (datetime): A date in the week to search
+
+        Returns:
+        list: A list containing the database entries for the work from home days, or an empty list if no entries exist
+        """
+        week_start = date - datetime.timedelta(date.weekday())
+
+        week_start = self.__format_date(week_start)
+
+        DB_Interface.db_cursor.execute("SELECT * FROM wfh_day WHERE empl_email = '" + email + "' AND wfh_date > '" + week_start + "';")
+        return(DB_Interface.db_cursor.fetchall())
+    
+
+    def wfh_day_overlapping(self, email: str, date: datetime) -> bool:
+        """
+        Checks if an employee has already booked a date for work from home
+        
+        Parameters:
+        email (str): The email of the employee
+        date (datetime): The date to check
+
+        Returns:
+        bool: True if the date has already been scheduled, False otherwise
+        """
+        DB_Interface.db_cursor.execute("SELECT * FROM wfh_day WHERE empl_email = '" + email + "' AND wfh_date = '" + self.__format_date(date) + "';")
+        existing_requests = DB_Interface.db_cursor.fetchall()
+        if existing_requests == []:
+            return False
+        else:
+            return True
+
+
+    def valid_wfh_day(self, email: str, date: datetime, max_week_wfh_days: int) -> bool:
+        """
+        Checks if an employee can book the given work from home date for the current week 
+        
+        Parameters:
+        email (str): The email of the employee
+        date (datetime): The date to schedule
+        max_week_wfh_days (int): The maximum number of days an employee is allowed to work from home each week
+
+        Returns:
+        bool: True if the employee can schedule the date, False otherwise
+        """
+        week_start = date - datetime.timedelta(date.weekday())
+        week_end = week_start + datetime.timedelta(6)
+
+        week_start = self.__format_date(week_start)
+        week_end = self.__format_date(week_end)
+
+        print("SELECT * FROM wfh_day WHERE empl_email = '" + email + "' AND wfh_date > '" + week_start + "' AND wfh_date < '" + week_end + "';")
+        DB_Interface.db_cursor.execute("SELECT * FROM wfh_day WHERE empl_email = '" + email + "' AND wfh_date > '" + week_start + "' AND wfh_date < '" + week_end + "';")
+        existing_requests = DB_Interface.db_cursor.fetchall()
+        if len(existing_requests) < max_week_wfh_days:
+            return True
+        else:
+            return False
+        
 
     def __format_date(self, date: datetime) -> str:
         """
