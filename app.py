@@ -1,7 +1,6 @@
 from db_interactions import DB_Interface 
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import json
-import time
 import datetime
 
 file = open('secrets.json')
