@@ -82,7 +82,6 @@ def submit_leave_request():
         start_date = request.form['startDate']
         end_date = request.form['endDate']
         reason = request.form.get('reason', '')
-        error=None
 
         start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
         end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
@@ -91,6 +90,8 @@ def submit_leave_request():
             flash('Error. End Date Cannot Be Before Start Date', 'leave_request_error')
         elif start_date < datetime.datetime.today() - datetime.timedelta(1) or end_date < datetime.datetime.today() - datetime.timedelta(1):
             flash('Error. Selected Dates Cannot Be Past Dates', 'leave_request_error')
+        elif DB.request_overlapping(username, start_date, end_date):
+            flash('Error. Selected Dates Overlap With Existing Leave Request', 'leave_request_error')
         else:
             if DB.add_leave_request(username, start_date, end_date, reason) == False:
                 flash('Error. Please try again', 'leave_request_error')
@@ -123,7 +124,7 @@ def submit_WFH_request():
 def logout():
     session.pop('username', None)
     session.pop('name', None)
-    return redirect(url_for('review'))
+    return redirect(url_for('login'))
 
 
 def valid_session():

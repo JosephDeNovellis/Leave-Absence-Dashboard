@@ -260,7 +260,17 @@ class DB_Interface:
         """
         DB_Interface.db_cursor.execute("SELECT e.empl_name, t.* FROM time_off_request t, employee e WHERE t.req_status = '" + status + "' AND e.empl_email = t.empl_email AND e.manager_email = '" + manager_email + "' ORDER BY t.req_start_date;")
         return(DB_Interface.db_cursor.fetchall())
+    
+    def request_overlapping(self, empl_email: str, start_date: datetime, end_date: datetime):
+        start_date_formatted = self.__format_date(start_date)
+        end_date_formatted = self.__format_date(end_date)
 
+        DB_Interface.db_cursor.execute("SELECT * FROM time_off_request WHERE empl_email = '" + empl_email + "' AND ('" + start_date_formatted + "' <= req_end_date AND '" + end_date_formatted + "' >= req_start_date);")
+        existing_requests = DB_Interface.db_cursor.fetchall()
+        if existing_requests == []:
+            return False
+        else:
+            return True
 
     def add_wfh_day(self, email: str, date: datetime):
         """

@@ -4,6 +4,10 @@ body {
     min-height: 100vh;
 }
 
+.welcomeMessage {
+    margin-top: 0;
+}
+
 .body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
@@ -215,4 +219,20 @@ div p {
 
 .decline_button {
     background-color: red;
+}
+
+.leave_requests tr td:last-child { 
+    width: 1%;
+    white-space: nowrap;
+}
+
+.logout_button {
+    background-color: red;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.status_column {
+    text-align: center;
 }

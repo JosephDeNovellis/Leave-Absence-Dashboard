@@ -9,7 +9,11 @@
 
 <body class="dashboard-body">
     <div class="dash-container">
-        <h2 id="welcomeMessage">Welcome, {{ session['name'] }}!</h2>
+        <h2 class="welcomeMessage" id="welcomeMessage">Welcome, {{ session['name'] }}!</h2>
+
+        <form action="{{ url_for('logout') }}" method="get">
+            <button class="logout_button" type="submit" name="logout_button">Logout</button>
+        </form>
 
         <div class = "row">
             <div class = "column left">
@@ -59,7 +63,7 @@
                                     <td>{{ request['req_start_date'] }}</td>
                                     <td>{{ request['req_end_date'] }}</td>
                                     <td>{{ request['req_reason'] }}</td>
-                                    <td><b>{{ request['req_status'] }}</b></td>
+                                    <td class="status_column"><b>{{ request['req_status'] }}</b></td>
                                 </tr>
                             {% endfor %}
                         </table>
