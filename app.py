@@ -32,7 +32,6 @@ def login():
         error = None
         if request.method == 'POST':
             user = DB.ret_employee_pwd(request.form['username'], request.form['password'])
-            print(user)
             if user == []:
                 error = "Invalid credentials. Please try again."
             else:
@@ -51,7 +50,7 @@ def dashboard(name):
             if 'cancel_wfh' in request.form:
                 date = datetime.datetime.strptime(request.form['cancel_wfh'], '%Y-%m-%d')
                 if date < datetime.datetime.today():
-                    flash('Error. Cannot Cancel Past Work From Home Day', 'wfh_error')
+                    flash('Error. Cannot Cancel Past or Current Work From Home Day', 'wfh_error')
                 else:
                     DB.del_wfh_day(session['username'], datetime.datetime.strptime(request.form['cancel_wfh'], '%Y-%m-%d'))
 

@@ -244,7 +244,7 @@ class DB_Interface:
         list: A list containing the database entries for the leave requests, or an empty list if no entries exist
         """
         date = self.__format_date(date)
-        DB_Interface.db_cursor.execute("SELECT * FROM time_off_request WHERE empl_email = '" + email + "' AND req_start_date > '" + date + "';")
+        DB_Interface.db_cursor.execute("SELECT * FROM time_off_request WHERE empl_email = '" + email + "' AND req_end_date >= '" + date + "';")
         return(DB_Interface.db_cursor.fetchall())
     
 
@@ -379,7 +379,7 @@ class DB_Interface:
 
         week_start = self.__format_date(week_start)
 
-        DB_Interface.db_cursor.execute("SELECT * FROM wfh_day WHERE empl_email = '" + email + "' AND wfh_date > '" + week_start + "';")
+        DB_Interface.db_cursor.execute("SELECT * FROM wfh_day WHERE empl_email = '" + email + "' AND wfh_date >= '" + week_start + "';")
         return(DB_Interface.db_cursor.fetchall())
     
 
