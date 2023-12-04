@@ -130,7 +130,8 @@ div p {
 }
 
 .rev_column1{
-    width: 10%;
+    width: fit-content;
+    margin-right: 13px;
 }
 
 .rev_column2 {
