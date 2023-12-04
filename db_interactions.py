@@ -261,7 +261,18 @@ class DB_Interface:
         DB_Interface.db_cursor.execute("SELECT e.empl_name, t.* FROM time_off_request t, employee e WHERE t.req_status = '" + status + "' AND e.empl_email = t.empl_email AND e.manager_email = '" + manager_email + "' ORDER BY t.req_start_date;")
         return(DB_Interface.db_cursor.fetchall())
     
-    def request_overlapping(self, empl_email: str, start_date: datetime, end_date: datetime):
+    def request_overlapping(self, empl_email: str, start_date: datetime, end_date: datetime) -> bool:
+        """
+        Determines if any existing requests overlap with the provided dates
+
+        Parameters:
+        empl_email (str): The email address of the employee to check
+        start_date (datetime): The start date of the time period to check
+        end_date (datetime): The end date of the time period to check
+
+        Returns:
+        bool: True if the dates overlap with an existing record, False otherwise
+        """
         start_date_formatted = self.__format_date(start_date)
         end_date_formatted = self.__format_date(end_date)
 
